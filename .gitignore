@@ -1,0 +1,42 @@
+# Common
+.DS_Store
+*.zip
+.idea/
+.vscode/
+*.log
+
+# Mobile (Flutter)
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.metadata
+mobile/build/
+mobile/ios/Flutter/Generated.xcconfig
+mobile/ios/Flutter/flutter_export_environment.sh
+mobile/ios/Flutter/Flutter.podspec
+mobile/ios/.generated/
+mobile/android/local.properties
+mobile/android/key.properties
+mobile/android/app/src/main/res/values/strings.xml
+
+# Backend (Laravel)
+backend/.env
+backend/vendor/
+backend/node_modules/
+backend/public/storage
+backend/public/hot
+backend/storage/*.key
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/testing/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+backend/bootstrap/cache/*
+backend/.phpunit.result.cache
+
+# Scraper (Node.js)
+scraper/node_modules/
+scraper/.env
+scraper/npm-debug.log*
+scraper/yarn-debug.log*
+scraper/yarn-error.log*

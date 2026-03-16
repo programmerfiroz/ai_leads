@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "AI Lead Scraper",
+  "version": "1.0",
+  "description": "Scrape leads from Google Maps and send them to your AI Lead Management System.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "alarms",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "https://www.google.com/maps/*",
+    "https://www.google.co.in/maps/*",
+    "https://ai-leads.brainket.online/*",
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.google.com/maps/*",
+        "https://www.google.co.in/maps/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

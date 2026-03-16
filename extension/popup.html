@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            width: 300px;
+            padding: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: #1a73e8;
+            border-radius: 8px;
+            margin-right: 12px;
+        }
+        h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #202124;
+        }
+        .info {
+            font-size: 13px;
+            color: #5f6368;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #1557b0;
+        }
+        .status {
+            margin-top: 12px;
+            font-size: 12px;
+            text-align: center;
+            color: #1e8e3e;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"></div>
+        <h2>AI Lead Scraper</h2>
+    </div>
+    <p class="info">
+        Open Google Maps, search for businesses, and click the <b>Scrape Leads</b> button on the screen to capture leads directly to your CRM.
+    </p>
+    <a href="https://ai-leads.brainket.online" target="_blank" class="btn">View Dashboard</a>
+    <div id="status" class="status">Connected to live system</div>
+</body>
+</html>
