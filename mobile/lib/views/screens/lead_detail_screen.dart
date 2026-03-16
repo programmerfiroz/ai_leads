@@ -16,25 +16,31 @@ class LeadDetailScreen extends StatelessWidget {
     final LeadController controller = Get.find<LeadController>();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(lead.businessName),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF0F172A), size: 18),
+          onPressed: () => Get.back(),
+        ),
+        title: Text(
+          'Lead Details',
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Color(0xFF0F172A), letterSpacing: -0.5),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit_outlined),
+            icon: const Icon(Icons.edit_rounded, color: Color(0xFF056E73), size: 22),
             onPressed: () => Get.to(() => LeadFormScreen(lead: lead)),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: Colors.red),
+            icon: const Icon(Icons.delete_rounded, color: Color(0xFFEF4444), size: 22),
             onPressed: () => _confirmDelete(context, controller),
           ),
-          IconButton(
-            icon: const Icon(Icons.edit_note),
-            onPressed: () => _showStatusUpdateDialog(context, controller),
-          )
+          const SizedBox(width: 8),
         ],
       ),
       body: Obx(() {
-        // Find the most recent version of this lead in the controller
         final currentLead = controller.leads.firstWhere((l) => l.id == lead.id, orElse: () => lead);
         
         return SingleChildScrollView(
@@ -42,13 +48,17 @@ class LeadDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildProfileHeader(currentLead),
-              _buildPerformanceStats(currentLead),
-              _buildContactSection(currentLead),
               _buildActionButtons(controller, currentLead),
+              _buildPerformanceStats(currentLead),
+              _buildSectionTitle('Lead Information'),
+              _buildContactSection(currentLead),
+              _buildSectionTitle('Ai Business Analysis'),
               _buildPitchSuggestions(currentLead),
+              _buildSectionTitle('Social Presence'),
               _buildSocialSection(currentLead),
+              _buildSectionTitle('Location'),
               _buildAddressSection(currentLead),
-              const SizedBox(height: 30),
+              const SizedBox(height: 50),
             ],
           ),
         );
@@ -56,38 +66,46 @@ class LeadDetailScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+      child: Text(
+        title.toUpperCase(),
+        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Colors.black.withOpacity(0.3), letterSpacing: 1.2),
+      ),
+    );
+  }
+
   Widget _buildPitchSuggestions(Lead currentLead) {
     final hasAiPitch = currentLead.aiPitch != null && currentLead.aiPitch!.isNotEmpty;
 
     return Container(
-      margin: const EdgeInsets.all(20),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.amber.withOpacity(0.05),
+        color: const Color(0xFFF59E0B).withOpacity(0.04),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.amber.withOpacity(0.2)),
+        border: Border.all(color: const Color(0xFFF59E0B).withOpacity(0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.auto_awesome, color: Colors.amber.shade700, size: 20),
+              const Icon(Icons.auto_awesome_rounded, color: Color(0xFFF59E0B), size: 18),
               const SizedBox(width: 10),
-              const Text('AI Business Analysis & Pitch', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.amber)),
+              const Text('Suggested Pitch', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
             ],
           ),
-          const SizedBox(height: 15),
+          const SizedBox(height: 16),
           if (hasAiPitch)
             Text(
               currentLead.aiPitch!,
-              style: const TextStyle(fontSize: 14, height: 1.5, color: Colors.white, fontStyle: FontStyle.italic),
-              softWrap: true,
+              style: const TextStyle(fontSize: 14, height: 1.6, color: Color(0xFF334155), fontWeight: FontWeight.w500),
             )
           else ...[
-            _buildPitchItem('Personalize', 'Mention their business name and "${currentLead.city ?? 'local'}" location.'),
-            _buildPitchItem('Reviews', 'If reviews are low, offer GMB profile optimization.'),
-            _buildPitchItem('Website', 'If no website, offer a fast mobile-friendly site.'),
+            _buildPitchItem('Personalize', 'Mention their business name and local presence.'),
+            _buildPitchItem('Optimize', 'Offer GMB profile and website optimization.'),
           ],
         ],
       ),
@@ -100,17 +118,14 @@ class LeadDetailScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 5.0),
-            child: Icon(Icons.check_circle_outline, size: 14, color: Colors.amber),
-          ),
-          const SizedBox(width: 10),
+          const Icon(Icons.check_circle_outline_rounded, size: 16, color: Color(0xFFF59E0B)),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                Text(description, style: const TextStyle(fontSize: 13, color: Colors.white70)),
+                Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: Color(0xFF0F172A))),
+                Text(description, style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.4))),
               ],
             ),
           ),
@@ -122,100 +137,130 @@ class LeadDetailScreen extends StatelessWidget {
   Widget _buildProfileHeader(Lead currentLead) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(25),
+      padding: const EdgeInsets.all(24),
+      margin: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Get.theme.cardColor,
-        borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.black.withOpacity(0.05)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Column(
         children: [
-          const CircleAvatar(radius: 40, backgroundColor: Colors.white12, child: Icon(Icons.business, size: 40)),
-          const SizedBox(height: 15),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFF056E73).withOpacity(0.05),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.business_rounded, size: 32, color: Color(0xFF056E73)),
+          ),
+          const SizedBox(height: 16),
           Text(
             currentLead.businessName, 
             textAlign: TextAlign.center, 
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), letterSpacing: -0.5),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 5),
-          Text(currentLead.category ?? 'Business Category', style: const TextStyle(color: Colors.white60)),
-          const SizedBox(height: 15),
-          if (currentLead.status != 'New' || !currentLead.isViewed)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
-              decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(20)),
-              child: Text(currentLead.status, style: const TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 6),
+          Text(
+            currentLead.category ?? 'Business Category', 
+            style: TextStyle(color: Colors.black.withOpacity(0.4), fontWeight: FontWeight.w700, fontSize: 13),
+          ),
+          const SizedBox(height: 16),
+          InkWell(
+            onTap: () => _showStatusUpdateDialog(Get.context!, Get.find<LeadController>()),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: _getStatusColor(currentLead.status).withOpacity(0.08), 
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: _getStatusColor(currentLead.status).withOpacity(0.12)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    currentLead.status.toUpperCase(), 
+                    style: TextStyle(color: _getStatusColor(currentLead.status), fontWeight: FontWeight.w900, fontSize: 10, letterSpacing: 0.8),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(Icons.edit_note_rounded, size: 14, color: _getStatusColor(currentLead.status)),
+                ],
+              ),
             ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildPerformanceStats(Lead currentLead) {
-    if ((currentLead.rating == null || currentLead.rating!.isEmpty) && 
-        (currentLead.reviewsCount == null || currentLead.reviewsCount!.isEmpty) &&
-        (currentLead.openingHours == null || currentLead.openingHours!.isEmpty)) {
-      return const SizedBox.shrink();
-    }
-
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white10),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black.withOpacity(0.05)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem(Icons.star_rounded, currentLead.rating ?? 'N/A', 'Rating', Colors.orange),
+          _buildStatItem(Icons.star_rounded, currentLead.rating ?? 'N/A', 'Rating', const Color(0xFFF59E0B)),
           _buildStatDivider(),
-          _buildStatItem(Icons.chat_bubble_outline_rounded, currentLead.reviewsCount ?? '0', 'Reviews', Colors.blue),
+          _buildStatItem(Icons.comment_rounded, currentLead.reviewsCount ?? '0', 'Reviews', const Color(0xFF3B82F6)),
           _buildStatDivider(),
-          _buildStatItem(Icons.access_time_rounded, currentLead.openingHours ?? 'N/A', 'Hours', Colors.green),
+          _buildStatItem(Icons.access_time_filled_rounded, currentLead.openingHours != null && currentLead.openingHours!.length > 5 ? 'Open' : 'N/A', 'Hours', const Color(0xFF10B981)),
         ],
       ),
     );
   }
 
   Widget _buildStatDivider() {
-    return Container(height: 30, width: 1, color: Colors.white10);
+    return Container(height: 24, width: 1, color: Colors.black.withOpacity(0.05));
   }
 
   Widget _buildStatItem(IconData icon, String value, String label, Color color) {
     return Column(
       children: [
         Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: color, size: 16),
+            Icon(icon, color: color, size: 14),
             const SizedBox(width: 4),
             Text(
               value,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
             ),
           ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 2),
         Text(
           label,
-          style: const TextStyle(fontSize: 11, color: Colors.white38),
+          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Colors.black.withOpacity(0.3)),
         ),
       ],
     );
   }
 
   Widget _buildContactSection(Lead currentLead) {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.03),
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildInfoTile(Icons.person_outline, 'Owner', currentLead.ownerName ?? 'Not Available'),
-          _buildInfoTile(Icons.phone_outlined, 'Phone', currentLead.phone ?? 'Not Available'),
-          _buildInfoTile(Icons.email_outlined, 'Email', currentLead.email ?? 'Not Available'),
-          _buildInfoTile(Icons.language_outlined, 'Website', currentLead.website ?? 'Not Available'),
+          _buildInfoTile(Icons.person_rounded, 'Key Contact', currentLead.ownerName ?? 'Manager'),
+          _buildInfoTile(Icons.phone_rounded, 'Phone', currentLead.phone ?? 'Not Provided'),
+          _buildInfoTile(Icons.email_rounded, 'Email', currentLead.email ?? 'Not Provided'),
+          _buildInfoTile(Icons.language_rounded, 'Website', currentLead.website ?? 'No Website'),
         ],
       ),
     );
@@ -223,18 +268,22 @@ class LeadDetailScreen extends StatelessWidget {
 
   Widget _buildInfoTile(IconData icon, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          Icon(icon, color: Get.theme.primaryColor, size: 24),
-          const SizedBox(width: 15),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+            child: Icon(icon, color: const Color(0xFF056E73), size: 18),
+          ),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: const TextStyle(color: Colors.white38, fontSize: 12)),
+                Text(label, style: TextStyle(color: Colors.black.withOpacity(0.3), fontSize: 10, fontWeight: FontWeight.w800)),
                 const SizedBox(height: 2),
-                Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500), overflow: TextOverflow.ellipsis),
+                Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)), overflow: TextOverflow.ellipsis),
               ],
             ),
           ),
@@ -247,32 +296,111 @@ class LeadDetailScreen extends StatelessWidget {
     final hasPhone = currentLead.phone != null && currentLead.phone!.isNotEmpty;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          _buildActionButton(Icons.phone_rounded, 'Call', const Color(0xFF3B82F6), hasPhone ? () {
+            final phone = currentLead.phone!.replaceAll(RegExp(r'\D'), '');
+            _launchURL('tel:$phone');
+          } : null),
+          _buildActionButton(FontAwesomeIcons.whatsapp, 'WhatsApp', const Color(0xFF25D366), hasPhone ? () => _launchWhatsApp(currentLead) : null),
+          _buildActionButton(Icons.map_rounded, 'Maps', const Color(0xFFF59E0B), (currentLead.mapsLink != null) ? () => _launchURL(currentLead.mapsLink!) : null),
           _buildActionButton(
-            Icons.phone, 
-            'Call', 
-            hasPhone ? Colors.blue : Colors.white10, 
-            hasPhone ? () {
-              final phone = currentLead.phone!.replaceAll(RegExp(r'\D'), '');
-              _launchURL('tel:$phone');
-            } : () {}
+            currentLead.isSavedLocally ? Icons.verified_rounded : Icons.person_add_rounded, 
+            currentLead.isSavedLocally ? 'Saved' : 'Save', 
+            const Color(0xFF10B981), 
+            hasPhone && !currentLead.isSavedLocally ? () => controller.saveLeadToContacts(currentLead) : null
           ),
-          _buildActionButton(
-            FontAwesomeIcons.whatsapp, 
-            'WhatsApp', 
-            hasPhone ? Colors.green : Colors.white10, 
-            hasPhone ? () => _launchWhatsApp(currentLead) : () {}
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(dynamic icon, String label, Color color, VoidCallback? onTap) {
+    bool isActive = onTap != null;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Column(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: isActive ? color.withOpacity(0.08) : Colors.black.withOpacity(0.03),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: isActive ? color.withOpacity(0.12) : Colors.black.withOpacity(0.05)),
+            ),
+            child: Center(
+              child: icon is IconData 
+                  ? Icon(icon, color: isActive ? color : Colors.black.withOpacity(0.2), size: 24)
+                  : FaIcon(icon, color: isActive ? color : Colors.black.withOpacity(0.2), size: 24),
+            ),
           ),
-          _buildActionButton(
-            currentLead.isSavedLocally ? Icons.person_search : Icons.person_add_outlined, 
-            currentLead.isSavedLocally ? 'Added' : 'Save', 
-            hasPhone ? (currentLead.isSavedLocally ? Colors.grey : Colors.blueAccent) : Colors.white10, 
-            hasPhone ? (currentLead.isSavedLocally ? () {} : () => controller.saveLeadToContacts(currentLead)) : () {}
+          const SizedBox(height: 8),
+          Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: isActive ? const Color(0xFF0F172A) : Colors.black.withOpacity(0.2))),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSocialSection(Lead currentLead) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black.withOpacity(0.05)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildSocialIcon(FontAwesomeIcons.instagram, const Color(0xFFE1306C), currentLead.instagram),
+          _buildSocialIcon(FontAwesomeIcons.facebook, const Color(0xFF1877F2), currentLead.facebook),
+          _buildSocialIcon(FontAwesomeIcons.linkedin, const Color(0xFF0A66C2), currentLead.linkedin),
+          _buildSocialIcon(FontAwesomeIcons.twitter, const Color(0xFF1DA1F2), currentLead.twitter),
+          _buildSocialIcon(FontAwesomeIcons.youtube, const Color(0xFFFF0000), currentLead.youtube),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSocialIcon(dynamic icon, Color color, String? link) {
+    bool isAvailable = link != null && link.isNotEmpty && link != 'N/A';
+    return InkWell(
+      onTap: isAvailable ? () => _launchURL(link) : null,
+      child: Opacity(
+        opacity: isAvailable ? 1.0 : 0.1,
+        child: icon is IconData
+            ? Icon(icon, color: color, size: 24)
+            : FaIcon(icon, color: color, size: 24),
+      ),
+    );
+  }
+
+  Widget _buildAddressSection(Lead currentLead) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black.withOpacity(0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            currentLead.address ?? 'No physical address listed.', 
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF334155), height: 1.5),
           ),
-          _buildActionButton(Icons.map_outlined, 'Maps', Colors.orange, () => _launchURL(currentLead.mapsLink ?? '')),
+          const SizedBox(height: 12),
+          Text(
+            currentLead.city ?? '', 
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.black.withOpacity(0.3)),
+          ),
         ],
       ),
     );
@@ -283,18 +411,8 @@ class LeadDetailScreen extends StatelessWidget {
     final myOrg = user['organization_name'] ?? 'my company';
     final myName = user['name'] ?? 'me';
     
-    String message;
-    if (lead.aiPitch != null && lead.aiPitch!.isNotEmpty) {
-      message = "Hi ${lead.businessName},\n\n${lead.aiPitch}\n\n- $myName from $myOrg";
-    } else {
-      message = "Hi ${lead.businessName},\n\n"
-          "I'm $myName from $myOrg. I noticed your ${lead.category ?? 'business'} in ${lead.city ?? 'your area'} and wanted to share how our AI tools can help you automate and scale.\n\n"
-          "Specifically, we can help ${lead.businessName} with:\n"
-          "✅ AI-Driven Customer Engagement\n"
-          "✅ Smart GMB Optimization\n"
-          "✅ 24/7 Autopilot Support\n\n"
-          "Would you be open to a 2-minute chat about transforming your ${lead.category ?? 'business'} with AI?";
-    }
+    String message = "Hi ${lead.businessName},\n\n"
+        "${lead.aiPitch ?? "I noticed your business in ${lead.city ?? 'your area'} and would love to chat."}\n\n- $myName from $myOrg";
     
     final encodedMsg = Uri.encodeComponent(message);
     final normalizedPhone = lead.phone!.replaceAll(RegExp(r'\D'), '');
@@ -302,134 +420,152 @@ class LeadDetailScreen extends StatelessWidget {
     _launchURL(url);
   }
 
-  Widget _buildActionButton(dynamic icon, String label, Color color, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          CircleAvatar(
-            backgroundColor: color.withOpacity(0.15),
-            child: icon is IconData 
-                ? Icon(icon, color: color, size: 20)
-                : FaIcon(icon, color: color, size: 20),
-          ),
-          const SizedBox(height: 6),
-          Text(label, style: const TextStyle(fontSize: 12)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSocialSection(Lead currentLead) {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Social Media', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 15),
-          Row(
-            children: [
-              _buildSocialIcon(FontAwesomeIcons.instagram, Colors.pink, currentLead.instagram),
-              const SizedBox(width: 20),
-              _buildSocialIcon(FontAwesomeIcons.facebook, Colors.blueAccent, currentLead.facebook),
-              const SizedBox(width: 20),
-              _buildSocialIcon(FontAwesomeIcons.linkedin, Colors.blue.shade700, currentLead.linkedin),
-              const SizedBox(width: 20),
-              _buildSocialIcon(FontAwesomeIcons.twitter, Colors.lightBlue, currentLead.twitter),
-              const SizedBox(width: 20),
-              _buildSocialIcon(FontAwesomeIcons.youtube, Colors.red, currentLead.youtube),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSocialIcon(dynamic icon, Color color, String? link) {
-    bool isAvailable = link != null && link.isNotEmpty && link != 'N/A';
-    return GestureDetector(
-      onTap: isAvailable ? () => _launchURL(link) : null,
-      child: icon is IconData
-          ? Icon(icon, color: isAvailable ? color : Colors.white10, size: 30)
-          : FaIcon(icon, color: isAvailable ? color : Colors.white10, size: 30),
-    );
-  }
-
-  Widget _buildAddressSection(Lead currentLead) {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Address', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10),
-          Text(currentLead.address ?? 'No address provided', style: const TextStyle(color: Colors.white70)),
-          const SizedBox(height: 5),
-          Text(currentLead.city ?? '', style: const TextStyle(color: Colors.white38)),
-        ],
-      ),
-    );
-  }
-
   void _launchURL(String url) async {
     if (url.isEmpty || url == 'N/A') return;
     final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    }
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
   void _showStatusUpdateDialog(BuildContext context, LeadController controller) {
     String selectedStatus = lead.status;
     final notesController = TextEditingController();
 
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Update Status'),
-        content: Column(
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(30),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        ),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Text(
+              'Update Interaction',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), letterSpacing: -0.5),
+            ),
+            const SizedBox(height: 30),
             DropdownButtonFormField<String>(
               value: selectedStatus,
+              dropdownColor: Colors.white,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF0F172A)),
               items: ['New', 'Contacted', 'Interested', 'Not Interested', 'Converted']
                   .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                   .toList(),
               onChanged: (val) => selectedStatus = val!,
-              decoration: const InputDecoration(labelText: 'Status'),
+              decoration: InputDecoration(
+                labelText: 'Engagement Stage',
+                labelStyle: TextStyle(color: Colors.black.withOpacity(0.3), fontWeight: FontWeight.w600),
+                filled: true,
+                fillColor: Colors.grey.withOpacity(0.04),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+              ),
             ),
-            const SizedBox(height: 10),
-            TextField(controller: notesController, decoration: const InputDecoration(labelText: 'Notes')),
+            const SizedBox(height: 20),
+            TextField(
+              controller: notesController, 
+              decoration: InputDecoration(
+                labelText: 'Quick Notes',
+                labelStyle: TextStyle(color: Colors.black.withOpacity(0.3), fontWeight: FontWeight.w600),
+                filled: true,
+                fillColor: Colors.grey.withOpacity(0.04),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+              )
+            ),
+            const SizedBox(height: 30),
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton(
+                onPressed: () {
+                  controller.updateLeadStatus(lead.id!, selectedStatus, notes: notesController.text);
+                  Get.back();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF056E73),
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                ),
+                child: const Text('Save Update', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+              ),
+            ),
+            const SizedBox(height: 20),
           ],
         ),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
-          ElevatedButton(
-            onPressed: () {
-              controller.updateLeadStatus(lead.id!, selectedStatus, notes: notesController.text);
-              Get.back();
-            },
-            child: const Text('Update'),
-          ),
-        ],
       ),
+      isScrollControlled: true,
     );
   }
 
   void _confirmDelete(BuildContext context, LeadController controller) {
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Delete Lead?'),
-        content: const Text('Are you sure you want to delete this lead? This action cannot be undone.'),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () => controller.deleteLead(lead.id!),
-            child: const Text('Delete', style: TextStyle(color: Colors.white)),
-          ),
-        ],
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(30),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(color: const Color(0xFFEF4444).withOpacity(0.1), shape: BoxShape.circle),
+              child: const Icon(Icons.delete_forever_rounded, color: Color(0xFFEF4444), size: 32),
+            ),
+            const SizedBox(height: 20),
+            const Text('Delete Lead?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+            const SizedBox(height: 10),
+            Text(
+              'Are you sure? This lead and all its data will be permanently removed.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.4), height: 1.5, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 30),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => Get.back(),
+                    child: Text('Cancel', style: TextStyle(color: Colors.black.withOpacity(0.4), fontWeight: FontWeight.w800)),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      controller.deleteLead(lead.id!);
+                      Get.back();
+                      Get.back();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFEF4444),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    ),
+                    child: const Text('Delete', style: TextStyle(fontWeight: FontWeight.w800)),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'New': return const Color(0xFF3B82F6);
+      case 'Contacted': return const Color(0xFF8B5CF6);
+      case 'Interested': return const Color(0xFFF59E0B);
+      case 'Converted': return const Color(0xFF10B981);
+      case 'Not Interested': return const Color(0xFFEF4444);
+      default: return const Color(0xFF64748B);
+    }
   }
 }

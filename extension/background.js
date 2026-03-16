@@ -1,7 +1,7 @@
-// Background Script for AI Lead Scraper
+// Background Script for AI Leads
 
 chrome.runtime.onInstalled.addListener(() => {
-    console.log("AI Lead Scraper Background Service Worker installed.");
+    console.log("AI Leads Background Service Worker installed.");
     // Start sync manager on install
     startSyncManager();
 });

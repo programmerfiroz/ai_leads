@@ -5,59 +5,65 @@ class HistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Mock data for history
-    final List<Map<String, dynamic>> history = [
-      {'title': 'Lead Synced', 'sub': 'The Hazelnut Factory', 'time': '2 mins ago', 'icon': Icons.sync, 'color': Colors.green},
-      {'title': 'Status Changed', 'sub': 'Mood Bakers -> Contacted', 'time': '1 hour ago', 'icon': Icons.edit_note, 'color': Colors.blue},
-      {'title': 'Scrape Run Completed', 'sub': 'Bakery in Lucknow (12 leads)', 'time': '3 hours ago', 'icon': Icons.check_circle_outline, 'color': Colors.purple},
-      {'title': 'Lead Synced', 'sub': 'Cake Walkers', 'time': '5 hours ago', 'icon': Icons.sync, 'color': Colors.green},
-      {'title': 'Profile Updated', 'sub': 'Changed business category', 'time': '1 day ago', 'icon': Icons.person_outline, 'color': Colors.orange},
-    ];
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Activity History'),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(20),
-        itemCount: history.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 15),
-        itemBuilder: (context, index) {
-          final item = history[index];
-          return Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: Colors.white10),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: item['color'].withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(item['icon'], color: item['color'], size: 24),
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          Positioned(
+            top: -60,
+            left: -60,
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [const Color(0xFF6366F1).withOpacity(0.06), Colors.transparent],
                 ),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(item['title'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text(item['sub'], style: const TextStyle(fontSize: 13, color: Colors.white70)),
-                    ],
-                  ),
-                ),
-                Text(item['time'], style: const TextStyle(fontSize: 11, color: Colors.white38)),
-              ],
+              ),
             ),
-          );
-        },
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(40.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF6366F1).withOpacity(0.06),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.history_rounded, size: 48, color: Color(0xFF6366F1)),
+                  ),
+                  const SizedBox(height: 32),
+                  const Text(
+                    'Activity history',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF0F172A),
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Track every action, status change, and successful scrape in one unified timeline. Launching soon!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black.withOpacity(0.4),
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

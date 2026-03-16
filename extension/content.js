@@ -1,6 +1,6 @@
 // Google Maps Scraper Content Script
 
-console.log("AI Lead Scraper loaded.");
+console.log("AI Leads loaded.");
 
 let isScraping = false;
 let currentLeads = [];
@@ -60,7 +60,7 @@ function createSidebar() {
 
     const logoArea = document.createElement('div');
     logoArea.innerHTML = `
-        <div style="font-size: 20px; font-weight: 850; color: #1a73e8; letter-spacing: -0.5px;">AI Lead Scraper</div>
+        <div style="font-size: 20px; font-weight: 850; color: #056E73; letter-spacing: -0.5px;">AI Leads</div>
         <div id="sidebar-user-info" style="font-size: 12px; color: #5f6368; margin-top: 4px;"></div>
     `;
 
@@ -99,7 +99,7 @@ async function renderSidebar(isInitial = false) {
     if (isInitial) {
         content.innerHTML = `
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 20px; animation: fadeIn 0.5s ease-in;">
-                <div style="width: 50px; height: 50px; border: 3px solid #f3f3f3; border-top: 3px solid #1a73e8; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <div style="width: 50px; height: 50px; border: 3px solid #f3f3f3; border-top: 3px solid #056E73; border-radius: 50%; animation: spin 1s linear infinite;"></div>
                 <div style="font-size: 14px; color: #666; font-weight: 500;">Securing Connection...</div>
             </div>
         `;
@@ -127,7 +127,7 @@ async function renderSidebar(isInitial = false) {
             `;
             
             document.getElementById('header-logout').onclick = async () => {
-                const confirmed = confirm("Logout from AI Lead Scraper?");
+                const confirmed = confirm("Logout from AI Leads?");
                 if (!confirmed) return;
                 await chrome.storage.local.clear();
                 currentUser = null;
@@ -164,7 +164,7 @@ function renderAuthView(container) {
             <div id="auth-form-container" style="display: flex; flex-direction: column; gap: 15px;">
                 <input type="text" id="side-phone" placeholder="Phone Number" style="padding: 14px; border-radius: 12px; border: 1px solid #ddd; outline: none; transition: border-color 0.2s;">
                 <input type="text" id="side-otp" placeholder="Enter 4-Digit OTP" style="padding: 14px; border-radius: 12px; border: 1px solid #ddd; outline: none; display: none;">
-                <button id="side-auth-btn" style="padding: 16px; background: #1a73e8; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(26,115,232,0.25);">Send OTP</button>
+                <button id="side-auth-btn" style="padding: 16px; background: #056E73; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(5,110,115,0.25);">Send OTP</button>
                 <button id="side-back-btn" style="padding: 8px; background: none; border: none; color: #666; font-size: 12px; cursor: pointer; display: none;">Change Phone Number</button>
             </div>
 
@@ -225,7 +225,7 @@ function renderRegisterView(container, prefilledPhone = '') {
     container.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 15px; animation: fadeIn 0.3s ease-in;">
             <div style="text-align: center; margin-bottom: 5px;">
-                <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #1a73e8;">Profile Setup</h3>
+                <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #056E73;">Profile Setup</h3>
                 <p style="font-size: 12px; color: #666; margin-top: 5px;">Complete your business profile</p>
             </div>
             
@@ -235,7 +235,7 @@ function renderRegisterView(container, prefilledPhone = '') {
                 <input id="r-org" placeholder="Company Name" style="padding: 14px; border-radius: 12px; border: 1px solid #ddd; font-size: 14px;">
                 <input id="r-cat" placeholder="Category (e.g. IT, Gym, Bakery)" style="padding: 14px; border-radius: 12px; border: 1px solid #ddd; font-size: 14px;">
                 
-                <button id="r-btn" style="padding: 16px; background: #1a73e8; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(26,115,232,0.25);">Confirm Profile</button>
+                <button id="r-btn" style="padding: 16px; background: #056E73; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(5,110,115,0.25);">Confirm Profile</button>
                 
                 <input type="hidden" id="r-phone" value="${prefilledPhone}">
                 <button id="r-back" style="background:none; border:none; color:#666; font-size:12px; cursor:pointer; padding: 10px;">Back to Login</button>
@@ -298,7 +298,7 @@ function renderDashboardView(container) {
             <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div style="font-weight: 700;">Recent Leads</div>
-                    <span id="side-count" style="font-size: 12px; color: #1a73e8; background: #e8f0fe; padding: 2px 8px; border-radius: 20px;">0 leads</span>
+                    <span id="side-count" style="font-size: 12px; color: #056E73; background: #e6f1f1; padding: 2px 8px; border-radius: 20px;">0 leads</span>
                 </div>
                 <div id="side-leads-list" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="text-align: center; color: #999; font-size: 13px; padding: 40px 0;">No leads scraped yet</div>
@@ -378,7 +378,7 @@ async function injectScrapeButton() {
         right: 20px;
         width: 60px;
         height: 60px;
-        background: #1a73e8;
+        background: #056E73;
         border-radius: 50%;
         display: flex;
         align-items: center;

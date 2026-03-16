@@ -42,7 +42,7 @@ class AuthController extends GetxController {
       if (errorStr.contains('User not found') || errorStr.contains('404')) {
         Get.snackbar('Profile Required', 'No profile found for this number. Please register.', 
             snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: const Color(0xFF6C63FF).withOpacity(0.8),
+            backgroundColor: const Color(0xFF056E73).withOpacity(0.8),
             colorText: Colors.white);
         Get.to(() => const SignupScreen(), arguments: {'phone': phone});
       } else {

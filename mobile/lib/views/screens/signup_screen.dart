@@ -50,7 +50,7 @@ class _SignupScreenState extends State<SignupScreen> {
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: const BoxDecoration(
-            color: Color(0xFF1E293B),
+            color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
@@ -61,7 +61,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   hintText: 'Search Category...',
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
-                  fillColor: Colors.white10,
+                  fillColor: Colors.grey.withOpacity(0.05),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                 ),
                 onChanged: (val) => setModalState(() => search = val),
@@ -88,70 +88,165 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF0F172A), size: 18),
+          onPressed: () => Get.back(),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Profile Setup'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(30.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        color: Colors.white,
+        child: Stack(
           children: [
-            const Text(
-              'Complete Your Profile',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-              textAlign: TextAlign.center,
+            // Mesh Background Accents
+            Positioned(
+              top: -60,
+              right: -60,
+              child: _buildGradientCircle(300, const Color(0xFF056E73).withOpacity(0.06)),
             ),
-            const SizedBox(height: 10),
-            const Text(
-              'Fill in your business details',
-              style: TextStyle(color: Colors.white60),
-              textAlign: TextAlign.center,
+            Positioned(
+              bottom: -40,
+              left: -40,
+              child: _buildGradientCircle(250, const Color(0xFFB2D430).withOpacity(0.08)),
             ),
-            const SizedBox(height: 40),
-            _buildTextField(_nameController, 'Full Name', Icons.person_outline),
-            const SizedBox(height: 20),
-            _buildTextField(_emailController, 'Email Address', Icons.email_outlined),
-            const SizedBox(height: 20),
-            _buildTextField(_orgController, 'Organization Name', Icons.business_outlined),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: _showCategoryPicker,
-              child: AbsorbPointer(
-                child: _buildTextField(_categoryController, 'Business Category', Icons.category_outlined),
+            
+            SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 100),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                   Text(
+                    'Profile Setup',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF0F172A),
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Let\'s build your business profile' ,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black38,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                  
+                  // Premium Input Group
+                  _buildPremiumGroup([
+                    _buildPremiumTextField(_nameController, 'Full Name', Icons.person_rounded),
+                    const Divider(height: 1, color: Colors.black12, indent: 20, endIndent: 20),
+                    _buildPremiumTextField(_emailController, 'Email Address', Icons.email_rounded),
+                    const Divider(height: 1, color: Colors.black12, indent: 20, endIndent: 20),
+                    _buildPremiumTextField(_orgController, 'Organization', Icons.business_center_rounded),
+                    const Divider(height: 1, color: Colors.black12, indent: 20, endIndent: 20),
+                    GestureDetector(
+                      onTap: _showCategoryPicker,
+                      child: AbsorbPointer(
+                        child: _buildPremiumTextField(_categoryController, 'Business Category', Icons.category_rounded),
+                      ),
+                    ),
+                  ]),
+                  
+                  const SizedBox(height: 40),
+                  
+                  // High-end Button
+                  Container(
+                    height: 54,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF056E73).withOpacity(0.2),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: authController.isLoading.value ? null : () => _handleSignup(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF056E73),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      ),
+                      child: authController.isLoading.value 
+                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : Text(
+                            'CONFIRM PROFILE', 
+                            style: TextStyle(
+                              fontSize: 11, 
+                              fontWeight: FontWeight.w700, 
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 40),
-            Obx(() => ElevatedButton(
-              onPressed: authController.isLoading.value ? null : () => _handleSignup(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6C63FF),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-              ),
-              child: authController.isLoading.value 
-                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                : const Text('Confirm Profile', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-            )),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, IconData icon) {
+  Widget _buildGradientCircle(double size, Color color) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [color, color.withOpacity(0)],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPremiumGroup(List<Widget> children) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(children: children),
+    );
+  }
+
+  Widget _buildPremiumTextField(TextEditingController controller, String hint, IconData icon) {
     return TextField(
       controller: controller,
+      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF0F172A)),
       decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white10,
         hintText: hint,
-        prefixIcon: Icon(icon),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+        hintStyle: const TextStyle(fontSize: 13, color: Colors.black26, fontWeight: FontWeight.w500),
+        prefixIcon: Icon(icon, color: const Color(0xFF056E73).withOpacity(0.4), size: 18),
+        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: BorderSide.none),
+        filled: true,
+        fillColor: Colors.grey.withOpacity(0.03),
       ),
     );
   }

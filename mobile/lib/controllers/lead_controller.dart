@@ -11,6 +11,7 @@ class LeadController extends GetxController {
   
   var leads = <Lead>[].obs;
   var isLoading = true.obs;
+  var selectedStatus = RxnString();
   var stats = {
     'total': 0,
     'new': 0,
@@ -21,6 +22,7 @@ class LeadController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _loadFromStorage();
     final token = GetStorage().read('token');
     if (token != null) {
       fetchLeads();
@@ -28,22 +30,48 @@ class LeadController extends GetxController {
     }
   }
 
+  void _loadFromStorage() {
+    final storage = GetStorage();
+    
+    // Load cached leads
+    final cachedLeads = storage.read<List>('leads_cache');
+    if (cachedLeads != null) {
+      leads.value = cachedLeads.map((e) => Lead.fromJson(Map<String, dynamic>.from(e))).toList();
+      syncLocalContacts();
+    }
+
+    // Load cached stats
+    final cachedStats = storage.read<Map>('stats_cache');
+    if (cachedStats != null) {
+      stats.value = Map<String, int>.from(cachedStats);
+    }
+  }
+
   void fetchLeads({String? city, String? category, String? status, String? search}) async {
     try {
       final token = GetStorage().read('token');
-      if (token == null) {
-        isLoading(false);
-        return;
+      if (token == null) return;
+
+      // Only show global loader if list is empty
+      if (leads.isEmpty) {
+        isLoading(true);
       }
-      isLoading(true);
+      
       var fetchedLeads = await _apiService.getLeads(
         city: city,
         category: category,
         status: status,
         search: search,
       );
-      leads.value = fetchedLeads;
-      await syncLocalContacts();
+      
+      selectedStatus.value = status;
+      
+      // Smart Update: Only refresh UI if data has actually changed
+      if (!_isSameData(leads, fetchedLeads)) {
+        leads.value = fetchedLeads;
+        GetStorage().write('leads_cache', fetchedLeads.map((e) => e.toJson()).toList());
+        await syncLocalContacts();
+      }
     } catch (e) {
       print('Error fetching leads: $e');
     } finally {
@@ -120,10 +148,30 @@ class LeadController extends GetxController {
       if (token == null) return;
       
       var fetchedStats = await _apiService.getStats();
-      stats.value = Map<String, int>.from(fetchedStats);
+      final newStats = Map<String, int>.from(fetchedStats);
+      
+      // Only update if stats have changed
+      if (stats['total'] != newStats['total'] || 
+          stats['new'] != newStats['new'] || 
+          stats['contacted'] != newStats['contacted'] ||
+          stats['converted'] != newStats['converted']) {
+        stats.value = newStats;
+        GetStorage().write('stats_cache', newStats);
+      }
     } catch (e) {
       print('Error fetching stats: $e');
     }
+  }
+
+  bool _isSameData(List<Lead> current, List<Lead> fetched) {
+    if (current.length != fetched.length) return false;
+    
+    for (int i = 0; i < current.length; i++) {
+      if (current[i].id != fetched[i].id || current[i].status != fetched[i].status) {
+        return false;
+      }
+    }
+    return true;
   }
 
   Future<void> refreshLeads() async {

@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "AI Lead Scraper",
+  "name": "AI Leads",
   "version": "1.0",
   "description": "Scrape leads from Google Maps and send them to your AI Lead Management System.",
   "permissions": [

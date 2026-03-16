@@ -29,10 +29,11 @@ class MainContainerScreen extends StatelessWidget {
       )),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
+          color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 20,
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 25,
               offset: const Offset(0, -5),
             ),
           ],
@@ -41,36 +42,67 @@ class MainContainerScreen extends StatelessWidget {
           currentIndex: navController.selectedIndex.value,
           onTap: (index) => navController.changeIndex(index),
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Theme.of(context).cardColor,
-          selectedItemColor: Theme.of(context).primaryColor,
-          unselectedItemColor: Colors.grey,
+          backgroundColor: Colors.white,
+          selectedItemColor: const Color(0xFF056E73),
+          unselectedItemColor: const Color(0xFF94A3B8),
           showUnselectedLabels: true,
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          unselectedLabelStyle: const TextStyle(fontSize: 12),
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w800, fontSize: 10, letterSpacing: 0.2),
+          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 10, letterSpacing: 0.2),
+          elevation: 0,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard_outlined),
-              activeIcon: Icon(Icons.dashboard),
-              label: 'Home',
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.grid_view_rounded, size: 22),
+              ),
+              activeIcon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.grid_view_rounded, size: 22),
+              ),
+              label: 'Overview',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.people_outline),
-              activeIcon: Icon(Icons.people),
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.rocket_launch_rounded, size: 22),
+              ),
+              activeIcon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.rocket_launch_rounded, size: 22),
+              ),
               label: 'Leads',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.auto_awesome_outlined),
-              activeIcon: Icon(Icons.auto_awesome),
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.auto_awesome_rounded, size: 22),
+              ),
+              activeIcon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.auto_awesome_rounded, size: 22),
+              ),
               label: 'Scrape',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.history),
-              activeIcon: Icon(Icons.history_toggle_off),
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.history_rounded, size: 22),
+              ),
+              activeIcon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.history_rounded, size: 22),
+              ),
               label: 'History',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.person_rounded, size: 22),
+              ),
+              activeIcon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.person_rounded, size: 22),
+              ),
               label: 'Profile',
             ),
           ],

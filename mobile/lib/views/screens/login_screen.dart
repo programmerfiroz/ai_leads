@@ -22,80 +22,185 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Container(
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 80),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(Icons.auto_graph, size: 80, color: Color(0xFF6C63FF)),
-              const SizedBox(height: 20),
-              Text(
-                'AI Lead CRM',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+        width: double.infinity,
+        color: Colors.white,
+        child: Stack(
+          children: [
+            // Mesh Background Accents
+            Positioned(
+              top: -80,
+              left: -80,
+              child: _buildGradientCircle(350, const Color(0xFF056E73).withOpacity(0.06)),
+            ),
+            Positioned(
+              bottom: 200,
+              left: -100,
+              child: _buildGradientCircle(380, const Color(0xFF6366F1).withOpacity(0.04)),
+            ),
+            Positioned(
+              bottom: -50,
+              right: -50,
+              child: _buildGradientCircle(300, const Color(0xFFB2D430).withOpacity(0.08)),
+            ),
+            
+            SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 100),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                      padding: const EdgeInsets.all(22),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF0F172A).withOpacity(0.05),
+                            blurRadius: 30,
+                            offset: const Offset(0, 15),
+                          ),
+                          BoxShadow(
+                            color: const Color(0xFF056E73).withOpacity(0.02),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/logo.jpg',
+                          width: 65,
+                          height: 65,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 35),
+                  Text(
+                    otpStatus ? 'Verification' : 'Welcome Back',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF0F172A),
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    otpStatus ? 'Enter the security code' : 'Sign in to manage your business leads',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black38,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                  const SizedBox(height: 60),
+                  
+                  // Premium Input Group
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.02),
+                          blurRadius: 15,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: otpStatus
+                        ? _buildPremiumTextField(_otpController, '4-Digit OTP', Icons.lock_open_rounded, keyboardType: TextInputType.number)
+                        : _buildPremiumTextField(_phoneController, 'Phone Number', Icons.phone_android_rounded, keyboardType: TextInputType.phone),
+                  ),
+                  
+                  const SizedBox(height: 40),
+                  
+                  // High-end Button
+                  Container(
+                    height: 54,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF056E73).withOpacity(0.2),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: authController.isLoading.value ? null : () => _handleAction(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF056E73),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      ),
+                      child: authController.isLoading.value 
+                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : Text(
+                            otpStatus ? 'VERIFY & CONTINUE' : 'SEND OTP', 
+                            style: TextStyle(
+                              fontSize: 11, 
+                              fontWeight: FontWeight.w700, 
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 25),
+                  if (otpStatus)
+                    TextButton(
+                      onPressed: () => setState(() => otpStatus = false),
+                      child: Text(
+                        'Change phone number?', 
+                        style: TextStyle(
+                          color: Colors.black26,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ),
+                ],
               ),
-              const SizedBox(height: 10),
-              Text(
-                otpStatus ? 'Verify your phone number' : 'Login to your account',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white60,
-                ),
-              ),
-              const SizedBox(height: 50),
-              if (!otpStatus)
-                _buildTextField(_phoneController, 'Phone Number', Icons.phone_outlined, keyboardType: TextInputType.phone)
-              else
-                _buildTextField(_otpController, '4-Digit OTP', Icons.lock_outline, keyboardType: TextInputType.number),
-              
-              const SizedBox(height: 40),
-              Obx(() => ElevatedButton(
-                onPressed: authController.isLoading.value ? null : () => _handleAction(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6C63FF),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                ),
-                child: authController.isLoading.value 
-                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : Text(otpStatus ? 'Verify & Login' : 'Send OTP', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-              )),
-              
-              const SizedBox(height: 20),
-              if (otpStatus)
-                TextButton(
-                  onPressed: () => setState(() => otpStatus = false),
-                  child: const Text('Change Phone Number', style: TextStyle(color: Colors.white60)),
-                ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, IconData icon, {TextInputType? keyboardType}) {
+  Widget _buildGradientCircle(double size, Color color) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [color, color.withOpacity(0)],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPremiumTextField(TextEditingController controller, String hint, IconData icon, {TextInputType? keyboardType}) {
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
+      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: const Color(0xFF0F172A)),
       decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white10,
         hintText: hint,
-        prefixIcon: Icon(icon),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+        hintStyle: TextStyle(fontSize: 13, color: Colors.black26, fontWeight: FontWeight.w500),
+        prefixIcon: Icon(icon, color: const Color(0xFF056E73).withOpacity(0.4), size: 18),
+        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+        filled: true,
+        fillColor: Colors.grey.withOpacity(0.04),
       ),
     );
   }

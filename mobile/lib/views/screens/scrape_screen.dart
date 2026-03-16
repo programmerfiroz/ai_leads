@@ -8,103 +8,104 @@ class ScrapeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final LeadController controller = Get.find<LeadController>();
-    final keywordController = TextEditingController();
-    final locationController = TextEditingController();
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Start Scraping'),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          Positioned(
+            top: -50,
+            right: -50,
+            child: Container(
+              width: 300,
+              height: 300,
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.2)),
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [const Color(0xFF056E73).withOpacity(0.08), Colors.transparent],
+                ),
               ),
-              child: Row(
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(40.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.auto_awesome, color: Theme.of(context).primaryColor, size: 32),
-                  const SizedBox(width: 15),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('AI Powered Scraper', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                        Text('Generate high-quality leads from Google Maps instantly.', style: TextStyle(fontSize: 12, color: Colors.white70)),
-                      ],
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF056E73).withOpacity(0.06),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.rocket_launch_rounded, size: 48, color: Color(0xFF056E73)),
+                  ),
+                  const SizedBox(height: 32),
+                  const Text(
+                    'AI Scraper coming soon',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF0F172A),
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'We are polishing our AI engine to bring you the most accurate business leads. Stay tuned!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black.withOpacity(0.4),
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFF056E73).withOpacity(0.2)),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: const Text(
+                      'NOTIFY ME',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF056E73),
+                        letterSpacing: 1.0,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 30),
-            const Text('What are you looking for?', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            TextField(
-              controller: keywordController,
-              decoration: InputDecoration(
-                hintText: 'e.g. Restaurants, Gyms, Bakeries',
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: Theme.of(context).cardColor,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text('Where should we search?', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            TextField(
-              controller: locationController,
-              decoration: InputDecoration(
-                hintText: 'e.g. Lucknow, Noida, Dubai',
-                prefixIcon: const Icon(Icons.location_on_outlined),
-                filled: true,
-                fillColor: Theme.of(context).cardColor,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
-              ),
-            ),
-            const SizedBox(height: 40),
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-              child: Obx(() => ElevatedButton(
-                onPressed: controller.isLoading.value ? null : () {
-                  if (keywordController.text.isEmpty || locationController.text.isEmpty) {
-                    Get.snackbar('Error', 'Please fill all fields');
-                    return;
-                  }
-                  controller.scrapeLeads(keywordController.text, locationController.text).then((_) {
-                    Get.find<NavController>().changeIndex(1); // Navigate to Leads tab
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                  elevation: 5,
-                ),
-                child: controller.isLoading.value 
-                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : const Text('Initiate Scrape Run', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              )),
-            ),
-            const SizedBox(height: 30),
-            const Text('Pro Tips 💡', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blueAccent)),
-            const SizedBox(height: 8),
-            const Text('• Use specific keywords for better results.\n• The scraper works in the background even if you close the app.\n• New leads will appear in your "Leads" tab once synced.', 
-              style: TextStyle(fontSize: 12, color: Colors.white60, height: 1.5)),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+}
+
+class _TipItem extends StatelessWidget {
+  final String text;
+  const _TipItem({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('• ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black26)),
+        Expanded(
+          child: Text(
+            text, 
+            style: TextStyle(fontSize: 11, color: Colors.black.withOpacity(0.4), fontWeight: FontWeight.w500, height: 1.5)
+          ),
+        ),
+      ],
     );
   }
 }
